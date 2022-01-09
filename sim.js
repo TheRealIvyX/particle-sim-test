@@ -41,7 +41,7 @@ function gameControl() {
   if (keyDown(38) || keyDown(87)) {
     camera.vel.y += 0.2
   }
-  if (keyDown(39) || keyDown(69)) {
+  if (keyDown(39) || keyDown(68)) {
     camera.vel.x -= 0.2
   }
   if (keyDown(40) || keyDown(83)) {
