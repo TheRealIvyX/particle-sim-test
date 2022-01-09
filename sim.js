@@ -204,7 +204,7 @@ for (let i = 0; i<5; i++) {
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 1*Math.random(),
-    reactivity: 0.7,
+    reactivity: 0.3,
     color: '#0000ff',
     bondProps: {
       max: 3,
@@ -217,7 +217,7 @@ for (let i = 0; i<5; i++) {
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 1*Math.random(),
-    reactivity: 0.7,
+    reactivity: 0.1,
     color: '#383838',
     bondProps: {
       max: 4,
