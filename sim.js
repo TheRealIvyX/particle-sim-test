@@ -49,9 +49,7 @@ class Particle {
     if (this.energy > 0) {
       this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
       this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
-      if (this.bonds.length == 0) {
-        this.energy *= 0.99
-      } else this.energy *= 0.999
+      this.energy *= 0.99
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
       let me = this
@@ -68,7 +66,7 @@ class Particle {
           me.vel.x -= ((me.x-other.x)/30)*force
           me.vel.y -= ((me.y-other.y)/30)*force
         } else {
-          if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2 || dist(me, other >= 250)) {
+          if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2 || dist(me, other) >= 250) {
             other.bonds.splice(other.bonds.indexOf(me))
             me.bonds.splice(other.bonds.indexOf(other))
             me.energy += 2
@@ -143,9 +141,9 @@ class Particle {
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x, me.y);
         ctx.lineTo((me.x+other.x)/2, (me.y+other.y)/2);
+        ctx.stroke();
         ctx.closePath();
         ctx.moveTo((me.x+other.x)/2, (me.y+other.y)/2);
-        ctx.stroke();
         ctx.strokeStyle = other.color
         ctx.lineTo(other.x, other.y);
         ctx.stroke();
