@@ -35,16 +35,16 @@ let camera = {
   }
 }
 function gameControl() {
-  if (keyDown(37)) {
+  if (keyDown(37) || keyDown(65)) {
     camera.vel.x += 0.2
   }
-  if (keyDown(38)) {
+  if (keyDown(38) || keyDown(87)) {
     camera.vel.y += 0.2
   }
-  if (keyDown(39)) {
+  if (keyDown(39) || keyDown(69)) {
     camera.vel.x -= 0.2
   }
-  if (keyDown(40)) {
+  if (keyDown(40) || keyDown(83)) {
     camera.vel.y -= 0.2
   }
   camera.x += camera.vel.x
@@ -225,7 +225,7 @@ class Particle {
       if (other.color == me.color) { // make a simple line between both particles if the 2 particles are the some color
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x+camera.x, me.y+camera.y);
-        ctx.lineTo(other.x+camera.y, other.y+camera.y);
+        ctx.lineTo(other.x+camera.x, other.y+camera.y);
         ctx.stroke();
         ctx.closePath();
       } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
