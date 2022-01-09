@@ -39,7 +39,7 @@ class Particle {
     this.bonds = [] // list of particles that this specific particle is bonded to.
     this.bondStrength = 0.8 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
     this.color = '#ffffff'
-    this.maxBonds = 3 // max amount of bonds the particle can have
+    this.maxBonds = 1 // max amount of bonds the particle can have
   }
   move() {
     this.x += this.vel.x
@@ -63,7 +63,7 @@ class Particle {
         }
         if (dist(me, other) <= 200) {
           let force = dist(me, other)
-          if (force <= 2) force = -3
+          if (force <= 50) force = -50
           force *= 0.0025
           me.vel.x -= ((me.x-other.x)/30)*force
           me.vel.y -= ((me.y-other.y)/30)*force
@@ -113,16 +113,16 @@ class Particle {
               }
             }
           }
-          if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
-            let force = 15000
-            force = force / dist(me, other) / dist(me, other)
-            if (force >= 10) force = 10
-            force *= 0.01
-            me.vel.x += ((me.x-other.x)/dist(me, other))*force
-            me.vel.y += ((me.y-other.y)/dist(me, other))*force
-            me.energy += force*10
-            other.energy += force*10
-          }
+        }
+        if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
+          let force = 15000
+          force = force / dist(me, other) / dist(me, other)
+          if (force >= 10) force = 10
+          force *= 0.01
+          me.vel.x += ((me.x-other.x)/dist(me, other))*force
+          me.vel.y += ((me.y-other.y)/dist(me, other))*force
+          me.energy += force*10
+          other.energy += force*10
         }
       }
     })
@@ -161,13 +161,16 @@ class Particle {
   }
 }
 
-function spawnPart(prop) {
+function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondProps:{max:1,strength:0.9}}) {
   let o = new Particle({
     x: prop.x,
     y: prop.y
   })
   o.energy = prop.energy
   o.reactivity = prop.reactivity
+  o.color = prop.color
+  o.maxBonds = prop.bondProps.max
+  o.bondStrength = prop.bondProps.strength
   particles.push(o)
 }
 for (let i = 0; i<100; i++) {
@@ -175,7 +178,12 @@ for (let i = 0; i<100; i++) {
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(), // give them a random energy just to see what happens
-    reactivity: 0.1
+    reactivity: 0.1,
+    color: '#ffffff',
+    propBonds: {
+      max: 1,
+      strength: 0.9
+    }
   })
 }
 
