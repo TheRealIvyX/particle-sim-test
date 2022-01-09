@@ -119,8 +119,10 @@ class Particle {
           force *= 0.01
           me.vel.x += ((me.x-other.x)/dist(me, other))*force
           me.vel.y += ((me.y-other.y)/dist(me, other))*force
-          me.energy += force*10
-          other.energy += force*10
+          if (!me.bonds.includes(other)) {
+            me.energy += force*10
+            other.energy += force*10
+          }
         }
       }
     })
