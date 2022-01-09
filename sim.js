@@ -77,6 +77,7 @@ spawnPart({
 
 // var is deprecated ik
 var bringToLife = (() => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
   particles.forEach(function(part){
     part.move()
     part.draw()
