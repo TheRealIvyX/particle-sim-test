@@ -180,7 +180,7 @@ for (let i = 0; i<100; i++) {
     energy: 30*Math.random(), // give them a random energy just to see what happens
     reactivity: 0.1,
     color: '#ffffff',
-    propBonds: {
+    bondProps: {
       max: 1,
       strength: 0.9
     }
