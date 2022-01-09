@@ -229,10 +229,12 @@ for (let i = 0; i<5; i++) {
 
 // var is deprecated ik
 var bringToLife = (() => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  particles.forEach(function(part){
+  ctx.clearRect(0, 0, canvas.width, canvas.height) // clear the canvas every frame
+  particles.forEach(function(part){ // do the movement and interactions of the particles
     part.move()
     part.interact()
+  })
+  particles.forEach(function(part){ // draw them after doing everything
     part.draw()
   })
 })
