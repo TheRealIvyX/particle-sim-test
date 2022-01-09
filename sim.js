@@ -127,7 +127,7 @@ class Particle {
               for (let i = 0; i<Math.min(other.bonds.length, me.maxBonds-me.bonds.length);i++) {
                 substitutedBonds.push(other.bonds[i])
               }
-              for (let i = 0; i<substitutedBonds.length); i++) {
+              for (let i = 0; i<substitutedBonds.length; i++) {
                 other.splitBond(other, substitutedBonds[i])
                 me.bond(me, substitutedBonds[i])
               }
