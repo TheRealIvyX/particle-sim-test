@@ -68,7 +68,7 @@ class Particle {
           me.vel.x -= ((me.x-other.x)/30)*force
           me.vel.y -= ((me.y-other.y)/30)*force
         } else {
-          if ((Math.random()*Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2) {
+          if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2 || dist(me, other >= 250)) {
             other.bonds.splice(other.bonds.indexOf(me))
             me.bonds.splice(other.bonds.indexOf(other))
             me.energy += 2
