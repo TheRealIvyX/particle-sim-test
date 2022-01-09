@@ -44,12 +44,14 @@ class Particle {
   move() {
     this.x += this.vel.x
     this.y += this.vel.y
+    this.vel.x *= 0.999
+    this.vel.y *= 0.999
     if (this.energy > 0) {
-      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
-      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
+      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+2) // vibrate less if bonded
+      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+2)
       if (this.bonds.length == 0) {
-        this.energy *= 0.999
-      } else this.energy *= 0.9999
+        this.energy *= 0.99
+      } else this.energy *= 0.999
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
       let me = this
@@ -58,6 +60,7 @@ class Particle {
         if (dist <= 200) {
           let force = dist(me, other)
           if (force <= 2) force = -3
+          force *= 0.01
           me.vel.x -= ((me.x-other.x)/30)*force
           me.vel.y -= ((me.y-other.y)/30)*force
         } else {
@@ -85,18 +88,20 @@ class Particle {
             let force = 5000
             force = force / dist(me, other) / dist(me, other)
             if (force > 2) force = 2
+            force *= 0.01
             me.vel.x -= ((me.x-other.x)/dist(me, other))*force
             me.vel.y -= ((me.y-other.y)/dist(me, other))*force
-            me.energy -= force/10 // increase/decrease own energy
-            other.energy += force/30
+            me.energy -= force*3 // increase/decrease own energy
+            other.energy += force*1
           }
           if (dist(me, other) < 300) { // strong short-range inter-molecular repulsion
             let force = 5000
             force = force / dist(me, other) / dist(me, other)
+            force *= 0.01
             me.vel.x += ((me.x-other.x)/dist(me, other))*force
             me.vel.y += ((me.y-other.y)/dist(me, other))*force
-            me.energy -= force/30 // increase/decrease own energy
-            other.energy += force/90
+            me.energy -= force*9 // increase/decrease own energy
+            other.energy += force*3
             if ((me.reactivity+other.reactivity)/2 > 0) {
               if (Math.random() > (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
                 if (!me.bonds.includes(other)) me.bonds.push(other) // bond
@@ -107,10 +112,12 @@ class Particle {
           if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
             let force = 15000
             force = force / dist(me, other) / dist(me, other)
+            if (force >= 10) force = 10
+            force *= 0.01
             me.vel.x += ((me.x-other.x)/dist(me, other))*force
             me.vel.y += ((me.y-other.y)/dist(me, other))*force
-            me.energy += force
-            other.energy += force
+            me.energy += force*10
+            other.energy += force*10
           }
         }
       }
@@ -162,7 +169,7 @@ for (let i = 0; i<100; i++) {
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(), // give them a random energy just to see what happens
-    reactivity: 0
+    reactivity: 0.1
   })
 }
 
