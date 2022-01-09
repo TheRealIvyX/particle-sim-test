@@ -103,6 +103,28 @@ class Particle {
     })
   }
   draw() {
+    // draw all of its bonds
+    this.bonds.forEach(function(other){
+      ctx.beginPath();
+      ctx.linewidth = 7.5/2
+      if (other.color == this.color) { // make a simple line between both particles if the 2 particles are the some color
+        ctx.strokeStyle = this.color
+        ctx.moveTo(this.x, this.y);
+        ctx.moveTo(other.x, other.y);
+        ctx.stroke();
+        ctx.closePath();
+      } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
+        ctx.strokeStyle = this.color
+        ctx.moveTo(this.x, this.y);
+        ctx.moveTo((this.x+other.x)/2, (this.y+other.y)/2);
+        ctx.stroke();
+        ctx.strokeStyle = other.color
+        ctx.moveTo(other.x, other.y);
+        ctx.stroke();
+        ctx.closePath();
+      }
+    })
+    // draw the particle itself
     ctx.beginPath();
     ctx.arc(this.x, this.y, 7.5, 0, Math.PI*2, false)
     ctx.fillStyle = this.color;
@@ -117,13 +139,15 @@ function spawnPart(prop) {
     y: prop.y
   })
   o.energy = prop.energy
+  o.reactivity = prop.reactivity
   particles.push(o)
 }
 for (let i = 0; i<100; i++) {
   spawnPart({ // spawn 100 particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 30*Math.random() // give them a random energy just to see what happens
+    energy: 30*Math.random(), // give them a random energy just to see what happens
+    reactivity: 0
   })
 }
 
