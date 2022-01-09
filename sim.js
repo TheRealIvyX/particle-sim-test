@@ -42,12 +42,17 @@ class Particle {
     this.maxBonds = 1 // max amount of bonds the particle can have
     this.bondHalfLife = -1 // the time it takes for half of all bonds formed by this particle to randomly break on their own in seconds. set to -1 to disable
     this.id = -1 // DO NOT CHANGE
+    this.substitutionPriority = 1 // particles with a lower substitution priority than other particles can be replaced by them in a molecule
   }
   splitBond(part1, part2) {
     part2.bonds.splice(part2.bonds.indexOf(part1))
     part1.bonds.splice(part1.bonds.indexOf(part2))
     part1.energy += 12 // add energy to both particles to prevent them from bonding again
     part2.energy += 12
+  }
+  bond(part1, part2) {
+    if (!part1.bonds.includes(part2)) part1.bonds.push(part2)
+    if (!part2.bonds.includes(part1)) part2.bonds.push(part1)
   }
   move() {
     this.x += this.vel.x
@@ -112,8 +117,19 @@ class Particle {
             other.energy += force*3
             if (me.reactivity > 0 && other.reactivity > 0 && dist(me, other) < 200) {
               if ((1-(Math.random()*Math.random()*Math.random())) < (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
-                if (!me.bonds.includes(other)) me.bonds.push(other) // bond
-                if (!other.bonds.includes(me)) other.bonds.push(me)
+                me.bond(me, other)
+              }
+            }
+          }
+          if (dist(me, other) < 300) { // substitution in molecules
+            if (other.substitutionPriority < me.substitutionPriotity && (1-(Math.random()*Math.random()*Math.random())<(me.reactivity+other.reactivity)/2) && me.bonds.length < me.maxBonds) {
+              let substitutedBonds = []
+              for (let i = 0; i<Math.min(other.bonds.length, me.maxBonds-me.bonds.length);i++) {
+                substitutedBonds.push(other.bonds[i])
+              }
+              for (let i = 0; i<substitutedBonds.length); i++) {
+                other.splitBond(other, substitutedBonds[i])
+                me.bond(me, substitutedBonds[i])
               }
             }
           }
@@ -173,11 +189,18 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
     x: prop.x,
     y: prop.y
   })
+  if (prop.bondProps == undefined) prop.bondProps = {
+    max: 1,
+    strength: 0.9,
+    halfLife: -1,
+    substitutionPriority: 1
+  }
   o.energy = prop.energy
   o.reactivity = prop.reactivity
   o.color = prop.color
   o.maxBonds = prop.bondProps.max
-  o.bondStrength = prop.bondProps.strength
+  o.bondHalfLife = prop.bondProps.halfLife
+  o.substitutionPriority = prop.bondProps.substitutionPriority
   o.id = Date.now()
   particles.push(o)
 }
@@ -191,7 +214,8 @@ for (let i = 0; i<20; i++) {
     color: '#ffffff',
     bondProps: {
       max: 1,
-      strength: 0.9
+      strength: 0.9,
+      substitutionPriority: 0
     }
   })
 }
@@ -244,6 +268,20 @@ for (let i = 0; i<5; i++) {
     bondProps: {
       max: 0,
       strength: 0
+    }
+  })
+}
+for (let i = 0; i<5; i++) {
+  spawnPart({ // spawn 5 green particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 30*Math.random(),
+    reactivity: 0.99,
+    color: '#90e050',
+    bondProps: {
+      max: 1,
+      strength: 0.99,
+      substitutionPriority: 2
     }
   })
 }
