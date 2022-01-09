@@ -4,7 +4,9 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 let particles = []
-let dist
+function dist(o1,o2) {
+  return Math.sqrt(Math.pow(o1.x-o2.x,2) + Math.pow(o1.y-o2.y,2))
+}
 
 class Vector {
     constructor(x, y) { // code "borrowed" from arras.io
@@ -37,6 +39,7 @@ class Particle {
     this.bondStrength = 1 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
     this.selfBondStrength = 1 // strength of bonds it forms with particles of its own type. range: 0 - 1
     this.color = '#ffffff'
+    this.maxBonds = 1 // max amount of bonds the particle can have
   }
   move() {
     this.x += this.vel.x
@@ -44,13 +47,29 @@ class Particle {
     if (this.energy > 0) {
       this.x += (this.energy * Math.random()) - (this.energy / 2)
       this.y += (this.energy * Math.random()) - (this.energy / 2)
+      this.energy *= 0.999 // dissisipate energy and vibrate
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
       this.bonds.forEach(function(other){
         if (!other.bonds.includes(this)) other.bonds.push(this) // add itself to the bonds list of the bonded particle if it isnt in said list already
-        
+        this.x += (this.x - other.x)/(3/((this.bondStrength+other.bondStrength)/2))
+        this.y += (this.y - other.y)/(3/((this.bondStrength+other.bondStrength)/2))
+        this.energy
       })
     }
+  }
+  interact() {
+    particles.forEach(function(other){
+      if (other != this) {
+        if (dist(this, other) < 3000) {
+          let force = 500
+          console.log(force)
+          force = force / dist(this, other) / dist(this, other)
+          this.x += ((this.x-other.x)/dist(this, other))*force
+          this.y += ((this.y-other.y)/dist(this, other))*force
+        }
+      }
+    })
   }
   draw() {
     ctx.beginPath();
@@ -80,6 +99,7 @@ var bringToLife = (() => {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   particles.forEach(function(part){
     part.move()
+    part.interact()
     part.draw()
   })
 })
