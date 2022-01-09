@@ -5,7 +5,7 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 let paused = false
 let heldKeys = {}
-window.onkeyup = function(e) {
+window.addEventListener('keyup', (e) => {
   heldKeys[e.keyCode] = false;
   if (e.keyCode == 32) {
     switch (paused) {
@@ -20,21 +20,23 @@ window.onkeyup = function(e) {
         break;
     }
   }
-}
-window.onkeydown = function(e) { heldKeys[e.keyCode] = true; }
+})
+window.addEventListener('keydown', (e) => { heldKeys[e.keyCode] = true; })
 function keyDown(key) {
+  let h = false
   switch (heldKeys[key.keyCode]) {
     case true:
-      return true
+      h = true
       break;
     case false:
-      return false
+      h = false
       break;
     default:
       heldKeys[key.keyCode] = false
-      return false
+      h = false
       break;
   }
+  return h
 }
 let camera = {
   x: 0,
