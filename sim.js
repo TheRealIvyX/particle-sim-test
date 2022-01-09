@@ -271,8 +271,8 @@ for (let i = 0; i<5; i++) {
     }
   })
 }
-for (let i = 0; i<5; i++) {
-  spawnPart({ // spawn 5 green particles on the screen
+for (let i = 0; i<10; i++) {
+  spawnPart({ // spawn 10 green particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
