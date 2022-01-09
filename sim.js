@@ -4,9 +4,9 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 let particles = []
-/*function dist(o1,o2) {
+function dist(o1,o2) {
   return Math.sqrt(Math.pow(o1.x-o2.x,2) + Math.pow(o1.y-o2.y,2))
-}*/
+}
 
 class Vector {
     constructor(x, y) { // code "borrowed" from arras.io
