@@ -6,7 +6,7 @@ canvas.height = window.innerHeight
 let paused = false
 let heldKeys = {}
 window.onkeyup = function(e) {
-  pressedKeys[e.keyCode] = false;
+  heldKeys[e.keyCode] = false;
   if (e.keyCode == 32) {
     switch (paused) {
       case false:
@@ -21,9 +21,9 @@ window.onkeyup = function(e) {
     }
   }
 }
-window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
+window.onkeydown = function(e) { heldKeys[e.keyCode] = true; }
 function keyDown(key) {
-  switch (pressedKeys[key.keyCode]) {
+  switch (heldKeys[key.keyCode]) {
     case true:
       return true
       break;
@@ -31,7 +31,7 @@ function keyDown(key) {
       return false
       break;
     default:
-      pressedKeys[key.keyCode] = false
+      heldKeys[key.keyCode] = false
       return false
       break;
   }
