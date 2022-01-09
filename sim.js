@@ -107,7 +107,7 @@ class Particle {
             me.energy -= force*9 // increase/decrease own energy
             other.energy += force*3
             if (me.reactivity > 0 && other.reactivity > 0 && dist(me, other) < 200) {
-              if (Math.random() > (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
+              if ((1-(Math.random()*Math.random()*Math.random())) < (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
                 if (!me.bonds.includes(other)) me.bonds.push(other) // bond
                 if (!other.bonds.includes(me)) other.bonds.push(me)
               }
