@@ -64,10 +64,12 @@ function gameControl() {
 }
 function drawUI() {
   if (paused == true) {
-    ctx.fillStyle
+    ctx.fillStyle = '#ffd966'
+    ctx.strokeStyle = '#af8916'
+    ctx.lineWidth = 7.5/2
     ctx.font = '48px ubuntu';
-    ctx.fillText('Simulation Paused', canvas.height, 58)
-    ctx.strokeText('Simulation Paused', canvas.width, 58)
+    ctx.fillText('Simulation Paused', canvas.width/2, 58)
+    ctx.strokeText('Simulation Paused', canvas.width/2, 58)
   }
 }
 
@@ -365,7 +367,7 @@ var bringToLife = (() => {
   if (canvas.width != window.innerWidth) canvas.width = window.innerWidth // update canvas size if it is changed
   if (canvas.height != window.innerHeight) canvas.height = window.innerHeight
   ctx.clearRect(0, 0, canvas.width, canvas.height) // clear the canvas every frame
-  if (paused != false) { // dont do any movement or interactions if the simulation is paused
+  if (paused != true) { // dont do any movement or interactions if the simulation is paused
     particles.forEach(function(part){ // do the movement and interactions of the particles
       part.move()
       part.interact()
