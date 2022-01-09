@@ -2,3 +2,82 @@ var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
+
+let particles = []
+let dist
+
+class Vector {
+    constructor(x, y) { // code "borrowed" from arras.io
+        this.x = x;
+        this.y = y;
+    }
+
+    update() {
+        this.len = this.length;
+        this.dir = this.direction;
+    }
+
+    get length() {
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+
+    get direction() {
+        return Math.atan2(this.y, this.x);
+    }
+}
+
+class Particle {
+  constructor(pos) {
+    this.x = pos.x
+    this.y = pos.y
+    this.vel = new Vector(0, 0) // velocity
+    this.reactivity = 0 // higher reactivity = higher chance to bond instead of repelling when within bonding range. range: 0 - 1
+    this.energy = 0 // more energy = more shaking, but can also do more stuff ig
+    this.bonds = [] // list of particles that this specific particle is bonded to.
+    this.bondStrength = 1 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
+    this.selfBondStrength = 1 // strength of bonds it forms with particles of its own type. range: 0 - 1
+    this.color = '#ffffff'
+  }
+  move() {
+    this.x += this.vel.x
+    this.y += this.vel.y
+    if (this.energy > 0) {
+      this.x += (this.energy * Math.random()) - (this.energy / 2)
+      this.y += (this.energy * Math.random()) - (this.energy / 2)
+    }
+    if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
+      this.bonds.forEach(function(other){
+        if (!other.bonds.includes(this)) other.bonds.push(this) // add itself to the bonds list of the bonded particle if it isnt in said list already
+        
+      })
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 10, 0, Math.PI*2, false)
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.closePath();
+  }
+}
+
+function spawnPart(prop) {
+  let o = new Particle({
+    x: prop.x,
+    y: prop.y
+  })
+  o.energy = prop.energy
+}
+spawnPart({
+  x: 240,
+  y: 160,
+  energy: 3
+})
+
+// var is deprecated ik
+var bringToLife = (() => {
+  particles.forEach(function(part){
+    part.move()
+    part.draw()
+  })
+})
