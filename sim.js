@@ -122,7 +122,7 @@ class Particle {
             }
           }
           if (dist(me, other) < 150) { // substitution in molecules
-            if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/600) {
+            if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/600 && me.maxBonds >= other.maxBonds) {
               if (me.bonds.length > 0) {
                 let swap = me.bonds[Math.floor(me.bonds.length*Math.random())]
                 me.splitBond(me, swap)
