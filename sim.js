@@ -59,17 +59,27 @@ class Particle {
     }
   }
   interact() {
-    /*particles.forEach(function(other){
-      if (other != this) {
-        if (dist(this, other) < 3000) {
-          let force = 500
-          console.log(force)
-          force = force / dist(this, other) / dist(this, other)
-          this.x += ((this.x-other.x)/dist(this, other))*force
-          this.y += ((this.y-other.y)/dist(this, other))*force
+    let me = this
+    let change = {
+      x: 0,
+      y: 0,
+      energy: -
+    }
+    particles.forEach(function(other){
+      if (other != me) {
+        if (dist(me, other) < 150) {
+          let force = 5000
+          force = force / dist(me, other) / dist(me, other)
+          change.x += ((me.x-other.x)/dist(me, other))*force
+          change.y += ((me.y-other.y)/dist(me, other))*force
+          if (force >= 1) force = 1
+          change.energy += force/100
         }
       }
-    })*/
+    })
+    this.x -= change.x
+    this.y -= change.y
+    this.energy += change.energy
   }
   draw() {
     ctx.beginPath();
