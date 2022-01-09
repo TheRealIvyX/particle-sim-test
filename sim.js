@@ -4,9 +4,9 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 let particles = []
-function dist(o1,o2) {
+/*function dist(o1,o2) {
   return Math.sqrt(Math.pow(o1.x-o2.x,2) + Math.pow(o1.y-o2.y,2))
-}
+}*/
 
 class Vector {
     constructor(x, y) { // code "borrowed" from arras.io
@@ -59,6 +59,17 @@ class Particle {
     }
   }
   interact() {
+    /*particles.forEach(function(other){
+      if (other != this) {
+        if (dist(this, other) < 3000) {
+          let force = 500
+          console.log(force)
+          force = force / dist(this, other) / dist(this, other)
+          this.x += ((this.x-other.x)/dist(this, other))*force
+          this.y += ((this.y-other.y)/dist(this, other))*force
+        }
+      }
+    })*/
   }
   draw() {
     ctx.beginPath();
@@ -88,7 +99,7 @@ var bringToLife = (() => {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   particles.forEach(function(part){
     part.move()
-    //part.interact()
+    part.interact()
     part.draw()
   })
 })
