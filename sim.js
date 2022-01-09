@@ -3,6 +3,73 @@ var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
+let paused = false
+let heldKeys = {}
+window.onkeyup = function(e) {
+  pressedKeys[e.keyCode] = false;
+  if (e.keyCode == 32) {
+    switch (paused) {
+      case false:
+        paused = true
+        break;
+      case true:
+        paused = false
+        break;
+      default:
+        paused = false
+        break;
+    }
+  }
+}
+window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
+function keyDown(key) {
+  switch (pressedKeys[key.keyCode]) {
+    case true:
+      return true
+      break;
+    case false:
+      return false
+      break;
+    default:
+      pressedKeys[key.keyCode] = false
+      return false
+      break;
+  }
+}
+let camera = {
+  x: 0,
+  y: 0,
+  vel: {
+    x: 0,
+    y: 0
+  }
+}
+gameControl() {
+  if (keyDown(37)) {
+    camera.vel.x -= 0.2
+  }
+  if (keyDown(38)) {
+    camera.vel.y -= 0.2
+  }
+  if (keyDown(39)) {
+    camera.vel.x += 0.2
+  }
+  if (keyDown(40)) {
+    camera.vel.y += 0.2
+  }
+  camera.x += camera.vel.x
+  camera.y += camera.vel.y
+  camera.vel.x *= 0.99
+  camera.vel.y *= 0.99
+}
+drawUI() {
+  if (paused == true) {
+    ctx.fillStyle
+    ctx.font = '48px ubuntu';
+    ctx.fillText('Simulation Paused', canvas.height, 58)
+    ctx.strokeText('Simulation Paused', canvas.width, 58)
+  }
+}
 
 let particles = []
 function dist(o1,o2) {
@@ -164,27 +231,27 @@ class Particle {
       ctx.lineWidth = 7.5/2
       if (other.color == me.color) { // make a simple line between both particles if the 2 particles are the some color
         ctx.strokeStyle = me.color
-        ctx.moveTo(me.x, me.y);
-        ctx.lineTo(other.x, other.y);
+        ctx.moveTo(me.x+camera.x, me.y+camera.y);
+        ctx.lineTo(other.x+camera.y, other.y+camera.y);
         ctx.stroke();
         ctx.closePath();
       } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
         ctx.strokeStyle = me.color
-        ctx.moveTo(me.x, me.y);
-        ctx.lineTo((me.x+other.x)/2, (me.y+other.y)/2);
+        ctx.moveTo(me.x+camera.x, me.y+camera.y);
+        ctx.lineTo((me.x+other.x)/2, ((me.y+other.y)/2)+camera.y);
         ctx.stroke();
         ctx.closePath();
         ctx.beginPath();
-        ctx.moveTo((me.x+other.x)/2, (me.y+other.y)/2);
+        ctx.moveTo(((me.x+other.x)/2)+camera.x, (me.y+other.y)/2);
         ctx.strokeStyle = other.color
-        ctx.lineTo(other.x, other.y);
+        ctx.lineTo(other.x+camera.x, other.y+camera.y);
         ctx.stroke();
         ctx.closePath();
       }
     })
     // draw the particle itself
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 7.5, 0, Math.PI*2, false)
+    ctx.arc(this.x+camera.x, this.y+camera.y, 7.5, 0, Math.PI*2, false)
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
@@ -298,12 +365,16 @@ var bringToLife = (() => {
   if (canvas.width != window.innerWidth) canvas.width = window.innerWidth // update canvas size if it is changed
   if (canvas.height != window.innerHeight) canvas.height = window.innerHeight
   ctx.clearRect(0, 0, canvas.width, canvas.height) // clear the canvas every frame
-  particles.forEach(function(part){ // do the movement and interactions of the particles
-    part.move()
-    part.interact()
-  })
+  if (paused != false) { // dont do any movement or interactions if the simulation is paused
+    particles.forEach(function(part){ // do the movement and interactions of the particles
+      part.move()
+      part.interact()
+    })
+  }
   particles.forEach(function(part){ // draw them after doing everything
     part.draw()
   })
+  gameControl() // stuff like camera movement
+  drawUI() // draw the UI after everything else is drawn
 })
 setInterval(bringToLife, 1000/60); // run at 60 fps
