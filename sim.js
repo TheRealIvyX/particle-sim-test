@@ -66,7 +66,8 @@ function drawUI() {
   if (paused == true) {
     ctx.fillStyle = '#ffd966'
     ctx.strokeStyle = '#af8916'
-    ctx.lineWidth = 7.5/2
+    ctx.lineWidth = 7.5/2.5
+    ctx.textAlign = 'center'
     ctx.font = '48px ubuntu';
     ctx.fillText('Simulation Paused', canvas.width/2, 58)
     ctx.strokeText('Simulation Paused', canvas.width/2, 58)
