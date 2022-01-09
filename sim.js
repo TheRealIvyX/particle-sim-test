@@ -40,6 +40,14 @@ class Particle {
     this.bondStrength = 0.8 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
     this.color = '#ffffff'
     this.maxBonds = 1 // max amount of bonds the particle can have
+    this.bondHalfLife = -1 // the time it takes for half of all bonds formed by this particle to randomly break on their own in seconds. set to -1 to disable
+    this.id = -1 // DO NOT CHANGE
+  }
+  splitBond(part1, part2) {
+    part2.bonds.splice(part2.bonds.indexOf(part1))
+    part1.bonds.splice(part1.bonds.indexOf(part2))
+    part1.energy += 12 // add energy to both particles to prevent them from bonding again
+    part2.energy += 12
   }
   move() {
     this.x += this.vel.x
@@ -59,30 +67,28 @@ class Particle {
           me.vel.x *= 0.99
           me.vel.y *= 0.99
         }
-        if (dist(me, other) <= 200) {
-          let force = dist(me, other)
-          if (force <= 50) force = -50
-          force *= 0.0025
-          me.vel.x -= ((me.x-other.x)/30)*force
-          me.vel.y -= ((me.y-other.y)/30)*force
-        } else {
+        let force = dist(me, other)
+        if (force <= 50) force = -50
+        force *= 0.0025
+        force *= me.bondStrength
+        me.vel.x -= ((me.x-other.x)/30)*force
+        me.vel.y -= ((me.y-other.y)/30)*force
+        if (dist(me, other) > 200) {
           if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2 || dist(me, other) >= 250) {
-            other.bonds.splice(other.bonds.indexOf(me))
-            me.bonds.splice(other.bonds.indexOf(other))
-            me.energy += 2
-            other.energy += 2
+            splitBond(me, other)
           }
+          if (dist(me, other) >= 250) {
+            splitBond(me, other)
+          }
+        }
+        if (Math.random() < (Math.log(2)/me.bondHalfLife)/60) {
+          splitBond(me, other)
         }
       })
     }
   }
   interact() {
     let me = this
-    let change = {
-      x: 0,
-      y: 0,
-      energy: 0
-    }
     particles.forEach(function(other){
       if (other != me) {
         if (!me.bonds.includes(other)) { // only apply attractive/repulsive forces if the particles aren't bonded to each other
@@ -172,8 +178,10 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   o.color = prop.color
   o.maxBonds = prop.bondProps.max
   o.bondStrength = prop.bondProps.strength
+  o.id = Date.now()
   particles.push(o)
 }
+
 for (let i = 0; i<20; i++) {
   spawnPart({ // spawn 20 white particles on the screen
     x: canvas.width*Math.random(),
@@ -223,6 +231,19 @@ for (let i = 0; i<5; i++) {
     bondProps: {
       max: 4,
       strength: 0.9
+    }
+  })
+}
+for (let i = 0; i<5; i++) {
+  spawnPart({ // spawn 5 light blue particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 30*Math.random(),
+    reactivity: 0,
+    color: '#d9ffff',
+    bondProps: {
+      max: 0,
+      strength: 0
     }
   })
 }
