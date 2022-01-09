@@ -57,6 +57,10 @@ class Particle {
       let me = this
       this.bonds.forEach(function(other){
         if (!other.bonds.includes(me)) other.bonds.push(me) // add itself to the bonds list of the bonded particle if it isnt in said list already
+        if (dist(me, other) >= 100) {
+          me.vel.x *= 0.99
+          me.vel.y *= 0.99
+        }
         if (dist(me, other) <= 200) {
           let force = dist(me, other)
           if (force <= 2) force = -3
@@ -132,16 +136,18 @@ class Particle {
       if (other.color == me.color) { // make a simple line between both particles if the 2 particles are the some color
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x, me.y);
-        ctx.moveTo(other.x, other.y);
+        ctx.lineTo(other.x, other.y);
         ctx.stroke();
         ctx.closePath();
       } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x, me.y);
+        ctx.lineTo((me.x+other.x)/2, (me.y+other.y)/2);
+        ctx.closePath();
         ctx.moveTo((me.x+other.x)/2, (me.y+other.y)/2);
         ctx.stroke();
         ctx.strokeStyle = other.color
-        ctx.moveTo(other.x, other.y);
+        ctx.lineTo(other.x, other.y);
         ctx.stroke();
         ctx.closePath();
       }
