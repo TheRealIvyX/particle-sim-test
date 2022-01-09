@@ -57,14 +57,14 @@ class Particle {
       let me = this
       this.bonds.forEach(function(other){
         if (!other.bonds.includes(me)) other.bonds.push(me) // add itself to the bonds list of the bonded particle if it isnt in said list already
-        if (dist <= 200) {
+        if (dist(me, other) <= 200) {
           let force = dist(me, other)
           if (force <= 2) force = -3
-          force *= 0.01
+          force *= 0.0025
           me.vel.x -= ((me.x-other.x)/30)*force
           me.vel.y -= ((me.y-other.y)/30)*force
         } else {
-          if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2) {
+          if ((Math.random()*Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2) {
             other.bonds.splice(other.bonds.indexOf(me))
             me.bonds.splice(other.bonds.indexOf(other))
             me.energy += 2
