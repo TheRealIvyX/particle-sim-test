@@ -199,6 +199,32 @@ for (let i = 0; i<10; i++) {
     }
   })
 }
+for (let i = 0; i<5; i++) {
+  spawnPart({ // spawn 5 blue particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 1*Math.random(),
+    reactivity: 0.7,
+    color: '#0000ff',
+    bondProps: {
+      max: 3,
+      strength: 0.95
+    }
+  })
+}
+for (let i = 0; i<5; i++) {
+  spawnPart({ // spawn 5 dark grey particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 1*Math.random(),
+    reactivity: 0.7,
+    color: '#383838',
+    bondProps: {
+      max: 4,
+      strength: 0.9
+    }
+  })
+}
 
 // var is deprecated ik
 var bringToLife = (() => {
