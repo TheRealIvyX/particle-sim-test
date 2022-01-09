@@ -23,8 +23,8 @@ window.addEventListener('keyup', (e) => {
 })
 window.addEventListener('keydown', (e) => { heldKeys[e.keyCode] = true; })
 function keyDown(key) {
-  if (heldKeys[key.keyCode] == null) heldKeys[key.keyCode] = false 
-  return heldKeys[key.keyCode]
+  if (heldKeys[key] == null) heldKeys[key] = false 
+  return heldKeys[key]
 }
 let camera = {
   x: 0,
@@ -36,16 +36,16 @@ let camera = {
 }
 function gameControl() {
   if (keyDown(37)) {
-    camera.vel.x -= 0.2
-  }
-  if (keyDown(38)) {
-    camera.vel.y -= 0.2
-  }
-  if (keyDown(39)) {
     camera.vel.x += 0.2
   }
-  if (keyDown(40)) {
+  if (keyDown(38)) {
     camera.vel.y += 0.2
+  }
+  if (keyDown(39)) {
+    camera.vel.x -= 0.2
+  }
+  if (keyDown(40)) {
+    camera.vel.y -= 0.2
   }
   camera.x += camera.vel.x
   camera.y += camera.vel.y
@@ -231,11 +231,11 @@ class Particle {
       } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x+camera.x, me.y+camera.y);
-        ctx.lineTo((me.x+other.x)/2, ((me.y+other.y)/2)+camera.y);
+        ctx.lineTo(((me.x+other.x)/2)+camera.x, ((me.y+other.y)/2)+camera.y);
         ctx.stroke();
         ctx.closePath();
         ctx.beginPath();
-        ctx.moveTo(((me.x+other.x)/2)+camera.x, (me.y+other.y)/2);
+        ctx.moveTo(((me.x+other.x)/2)+camera.x, ((me.y+other.y)/2)+camera.y);
         ctx.strokeStyle = other.color
         ctx.lineTo(other.x+camera.x, other.y+camera.y);
         ctx.stroke();
