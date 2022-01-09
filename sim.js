@@ -46,8 +46,8 @@ class Particle {
     this.x += this.vel.x
     this.y += this.vel.y
     if (this.energy > 0) {
-      this.x += (this.energy * Math.random()) - (this.energy / 2)
-      this.y += (this.energy * Math.random()) - (this.energy / 2)
+      this.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
+      this.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
       this.energy *= 0.999 // dissisipate energy and vibrate
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
