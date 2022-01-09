@@ -23,20 +23,8 @@ window.addEventListener('keyup', (e) => {
 })
 window.addEventListener('keydown', (e) => { heldKeys[e.keyCode] = true; })
 function keyDown(key) {
-  let h = false
-  switch (heldKeys[key.keyCode]) {
-    case true:
-      h = true
-      break;
-    case false:
-      h = false
-      break;
-    default:
-      heldKeys[key.keyCode] = false
-      h = false
-      break;
-  }
-  return h
+  if (heldKeys[key.keyCode] == null) heldKeys[key.keyCode] = false 
+  return heldKeys[key.keyCode]
 }
 let camera = {
   x: 0,
