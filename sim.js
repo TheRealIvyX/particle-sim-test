@@ -79,7 +79,7 @@ class Particle {
       }
     })
     this.x -= change.x // todo: find a better way to do this shit without the console malding over me trying to make an efficient usage of forEach
-    this.y -= change.y
+    this.y -= change.y // seriously this is actually a terrible implementation how the fuck do i do this without making the entire thing mald
     this.energy += change.energy
   }
   draw() {
