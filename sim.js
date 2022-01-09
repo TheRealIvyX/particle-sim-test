@@ -63,7 +63,7 @@ class Particle {
     let change = {
       x: 0,
       y: 0,
-      energy: -
+      energy: 0
     }
     particles.forEach(function(other){
       if (other != me) {
