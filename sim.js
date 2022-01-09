@@ -44,7 +44,7 @@ let camera = {
     y: 0
   }
 }
-gameControl() {
+function gameControl() {
   if (keyDown(37)) {
     camera.vel.x -= 0.2
   }
@@ -62,7 +62,7 @@ gameControl() {
   camera.vel.x *= 0.99
   camera.vel.y *= 0.99
 }
-drawUI() {
+function drawUI() {
   if (paused == true) {
     ctx.fillStyle
     ctx.font = '48px ubuntu';
