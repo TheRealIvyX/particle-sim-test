@@ -47,8 +47,8 @@ class Particle {
     this.vel.x *= 0.999
     this.vel.y *= 0.999
     if (this.energy > 0) {
-      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
-      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
+      this.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
+      this.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
       this.energy *= 0.99
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
@@ -132,7 +132,7 @@ class Particle {
     let me = this
     this.bonds.forEach(function(other){
       ctx.beginPath();
-      ctx.linewidth = 7.5/2
+      ctx.lineWidth = 7.5/2
       if (other.color == me.color) { // make a simple line between both particles if the 2 particles are the some color
         ctx.strokeStyle = me.color
         ctx.moveTo(me.x, me.y);
@@ -145,6 +145,7 @@ class Particle {
         ctx.lineTo((me.x+other.x)/2, (me.y+other.y)/2);
         ctx.stroke();
         ctx.closePath();
+        ctx.beginPath();
         ctx.moveTo((me.x+other.x)/2, (me.y+other.y)/2);
         ctx.strokeStyle = other.color
         ctx.lineTo(other.x, other.y);
@@ -177,7 +178,7 @@ for (let i = 0; i<20; i++) {
   spawnPart({ // spawn 20 white particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 1*Math.random(),
+    energy: 30*Math.random(),
     reactivity: 0.9,
     color: '#ffffff',
     bondProps: {
@@ -190,7 +191,7 @@ for (let i = 0; i<10; i++) {
   spawnPart({ // spawn 10 red particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 1*Math.random(),
+    energy: 30*Math.random(),
     reactivity: 0.7,
     color: '#ff0000',
     bondProps: {
@@ -203,7 +204,7 @@ for (let i = 0; i<5; i++) {
   spawnPart({ // spawn 5 blue particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 1*Math.random(),
+    energy: 30*Math.random(),
     reactivity: 0.3,
     color: '#0000ff',
     bondProps: {
@@ -216,7 +217,7 @@ for (let i = 0; i<5; i++) {
   spawnPart({ // spawn 5 dark grey particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 1*Math.random(),
+    energy: 30*Math.random(),
     reactivity: 0.1,
     color: '#383838',
     bondProps: {
