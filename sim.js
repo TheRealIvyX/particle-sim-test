@@ -68,19 +68,39 @@ class Particle {
     }
     particles.forEach(function(other){
       if (other != me) {
-        if (dist(me, other) < 150) {
+        if (dist(me, other) < 600 && dist(me, other) >= 300) { // weak long-range inter-molecular attraction
           let force = 5000
           force = force / dist(me, other) / dist(me, other)
-          change.x += ((me.x-other.x)/dist(me, other))*force
-          change.y += ((me.y-other.y)/dist(me, other))*force
-          if (force >= 1) force = 1
-          change.energy += force/100
+          if (force > 2) force = 2
+          me.x -= ((me.x-other.x)/dist(me, other))*force
+          me.y -= ((me.y-other.y)/dist(me, other))*force
+          me.energy -= force/10 // increase/decrease own energy
+          other.energy += force/30
+        }
+        if (dist(me, other) < 300) { // strong short-range inter-molecular repulsion
+          let force = 5000
+          force = force / dist(me, other) / dist(me, other)
+          me.x += ((me.x-other.x)/dist(me, other))*force
+          me.y += ((me.y-other.y)/dist(me, other))*force
+          me.energy -= force/30 // increase/decrease own energy
+          other.energy += force/90
+          if ((me.reactivity+other.reactivity)/2 > 0) {
+            if (Math.random() > (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
+              me.bonds.push(other)
+              other.bonds.push(me)
+            }
+          }
+        }
+        if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
+          let force = 15000
+          force = force / dist(me, other) / dist(me, other)
+          me.x += ((me.x-other.x)/dist(me, other))*force
+          me.y += ((me.y-other.y)/dist(me, other))*force
+          me.energy += force
+          other.energy += force
         }
       }
     })
-    this.x -= change.x // todo: find a better way to do this shit without the console malding over me trying to make an efficient usage of forEach
-    this.y -= change.y // seriously this is actually a terrible implementation how the fuck do i do this without making the entire thing mald
-    this.energy += change.energy
   }
   draw() {
     ctx.beginPath();
@@ -99,11 +119,13 @@ function spawnPart(prop) {
   o.energy = prop.energy
   particles.push(o)
 }
-spawnPart({
-  x: 240,
-  y: 160,
-  energy: 3
-})
+for (let i = 0; i<100; i++) {
+  spawnPart({ // spawn 100 particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 30*Math.random() // give them a random energy just to see what happens
+  })
+}
 
 // var is deprecated ik
 var bringToLife = (() => {
