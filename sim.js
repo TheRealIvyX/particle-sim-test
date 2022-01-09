@@ -75,14 +75,14 @@ class Particle {
         me.vel.y -= ((me.y-other.y)/30)*force
         if (dist(me, other) > 200) {
           if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2 || dist(me, other) >= 250) {
-            this.splitBond(me, other)
+            me.splitBond(me, other)
           }
           if (dist(me, other) >= 250) {
-            this.splitBond(me, other)
+            me.splitBond(me, other)
           }
         }
         if (Math.random() < (Math.log(2)/me.bondHalfLife)/60) {
-          this.splitBond(me, other)
+          me.splitBond(me, other)
         }
       })
     }
