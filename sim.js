@@ -54,7 +54,7 @@ class Particle {
   }
   draw() {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 10, 0, Math.PI*2, false)
+    ctx.arc(this.x, this.y, 7.5, 0, Math.PI*2, false)
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
@@ -67,6 +67,7 @@ function spawnPart(prop) {
     y: prop.y
   })
   o.energy = prop.energy
+  particles.push(o)
 }
 spawnPart({
   x: 240,
