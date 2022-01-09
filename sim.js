@@ -39,7 +39,7 @@ class Particle {
     this.bonds = [] // list of particles that this specific particle is bonded to.
     this.bondStrength = 0.8 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
     this.color = '#ffffff'
-    this.maxBonds = 1 // max amount of bonds the particle can have
+    this.maxBonds = 3 // max amount of bonds the particle can have
   }
   move() {
     this.x += this.vel.x
@@ -47,8 +47,8 @@ class Particle {
     this.vel.x *= 0.999
     this.vel.y *= 0.999
     if (this.energy > 0) {
-      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+2) // vibrate less if bonded
-      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+2)
+      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
+      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
       if (this.bonds.length == 0) {
         this.energy *= 0.99
       } else this.energy *= 0.999
@@ -57,7 +57,7 @@ class Particle {
       let me = this
       this.bonds.forEach(function(other){
         if (!other.bonds.includes(me)) other.bonds.push(me) // add itself to the bonds list of the bonded particle if it isnt in said list already
-        if (dist(me, other) >= 100) {
+        if (dist(me, other) <= 100) {
           me.vel.x *= 0.99
           me.vel.y *= 0.99
         }
