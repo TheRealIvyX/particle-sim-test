@@ -37,8 +37,7 @@ class Particle {
     this.reactivity = 0 // higher reactivity = higher chance to bond instead of repelling when within bonding range. range: 0 - 1
     this.energy = 0 // more energy = more shaking, but can also do more stuff ig
     this.bonds = [] // list of particles that this specific particle is bonded to.
-    this.bondStrength = 1 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
-    this.selfBondStrength = 1 // strength of bonds it forms with particles of its own type. range: 0 - 1
+    this.bondStrength = 0.8 // strength of bonds it forms. less stability = less force required to break the bond. range: 0 - 1
     this.color = '#ffffff'
     this.maxBonds = 1 // max amount of bonds the particle can have
   }
@@ -46,16 +45,29 @@ class Particle {
     this.x += this.vel.x
     this.y += this.vel.y
     if (this.energy > 0) {
-      this.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
-      this.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
-      this.energy *= 0.999 // dissisipate energy and vibrate
+      this.vel.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
+      this.vel.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
+      if (this.bonds.length == 0) {
+        this.energy *= 0.999
+      } else this.energy *= 0.9999
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
+      let me = this
       this.bonds.forEach(function(other){
-        if (!other.bonds.includes(this)) other.bonds.push(this) // add itself to the bonds list of the bonded particle if it isnt in said list already
-        this.x += (this.x - other.x)/(3/((this.bondStrength+other.bondStrength)/2))
-        this.y += (this.y - other.y)/(3/((this.bondStrength+other.bondStrength)/2))
-        this.energy
+        if (!other.bonds.includes(me)) other.bonds.push(me) // add itself to the bonds list of the bonded particle if it isnt in said list already
+        if (dist <= 200) {
+          let force = dist(me, other)
+          if (force <= 2) force = -3
+          me.vel.x -= ((me.x-other.x)/30)*force
+          me.vel.y -= ((me.y-other.y)/30)*force
+        } else {
+          if ((Math.random()*Math.random()*Math.random()) > (me.bondStrength+other.bondStrength)/2) {
+            other.bonds.splice(other.bonds.indexOf(me))
+            me.bonds.splice(other.bonds.indexOf(other))
+            me.energy += 2
+            other.energy += 2
+          }
+        }
       })
     }
   }
@@ -68,55 +80,58 @@ class Particle {
     }
     particles.forEach(function(other){
       if (other != me) {
-        if (dist(me, other) < 600 && dist(me, other) >= 300) { // weak long-range inter-molecular attraction
-          let force = 5000
-          force = force / dist(me, other) / dist(me, other)
-          if (force > 2) force = 2
-          me.x -= ((me.x-other.x)/dist(me, other))*force
-          me.y -= ((me.y-other.y)/dist(me, other))*force
-          me.energy -= force/10 // increase/decrease own energy
-          other.energy += force/30
-        }
-        if (dist(me, other) < 300) { // strong short-range inter-molecular repulsion
-          let force = 5000
-          force = force / dist(me, other) / dist(me, other)
-          me.x += ((me.x-other.x)/dist(me, other))*force
-          me.y += ((me.y-other.y)/dist(me, other))*force
-          me.energy -= force/30 // increase/decrease own energy
-          other.energy += force/90
-          if ((me.reactivity+other.reactivity)/2 > 0) {
-            if (Math.random() > (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
-              me.bonds.push(other)
-              other.bonds.push(me)
+        if (!me.bonds.includes(other)) { // only apply attractive/repulsive forces if the particles aren't bonded to each other
+          if (dist(me, other) < 600 && dist(me, other) >= 300) { // weak long-range inter-molecular attraction
+            let force = 5000
+            force = force / dist(me, other) / dist(me, other)
+            if (force > 2) force = 2
+            me.vel.x -= ((me.x-other.x)/dist(me, other))*force
+            me.vel.y -= ((me.y-other.y)/dist(me, other))*force
+            me.energy -= force/10 // increase/decrease own energy
+            other.energy += force/30
+          }
+          if (dist(me, other) < 300) { // strong short-range inter-molecular repulsion
+            let force = 5000
+            force = force / dist(me, other) / dist(me, other)
+            me.vel.x += ((me.x-other.x)/dist(me, other))*force
+            me.vel.y += ((me.y-other.y)/dist(me, other))*force
+            me.energy -= force/30 // increase/decrease own energy
+            other.energy += force/90
+            if ((me.reactivity+other.reactivity)/2 > 0) {
+              if (Math.random() > (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
+                if (!me.bonds.includes(other)) me.bonds.push(other) // bond
+                if (!other.bonds.includes(me)) other.bonds.push(me)
+              }
             }
           }
-        }
-        if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
-          let force = 15000
-          force = force / dist(me, other) / dist(me, other)
-          me.x += ((me.x-other.x)/dist(me, other))*force
-          me.y += ((me.y-other.y)/dist(me, other))*force
-          me.energy += force
-          other.energy += force
+          if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
+            let force = 15000
+            force = force / dist(me, other) / dist(me, other)
+            me.vel.x += ((me.x-other.x)/dist(me, other))*force
+            me.vel.y += ((me.y-other.y)/dist(me, other))*force
+            me.energy += force
+            other.energy += force
+          }
         }
       }
     })
   }
   draw() {
     // draw all of its bonds
+    let me = this
     this.bonds.forEach(function(other){
       ctx.beginPath();
       ctx.linewidth = 7.5/2
-      if (other.color == this.color) { // make a simple line between both particles if the 2 particles are the some color
-        ctx.strokeStyle = this.color
-        ctx.moveTo(this.x, this.y);
+      if (other.color == me.color) { // make a simple line between both particles if the 2 particles are the some color
+        ctx.strokeStyle = me.color
+        ctx.moveTo(me.x, me.y);
         ctx.moveTo(other.x, other.y);
         ctx.stroke();
         ctx.closePath();
       } else { // otherwise make 2 lines, which together look like a line that changes color halfway between both particles
-        ctx.strokeStyle = this.color
-        ctx.moveTo(this.x, this.y);
-        ctx.moveTo((this.x+other.x)/2, (this.y+other.y)/2);
+        ctx.strokeStyle = me.color
+        ctx.moveTo(me.x, me.y);
+        ctx.moveTo((me.x+other.x)/2, (me.y+other.y)/2);
         ctx.stroke();
         ctx.strokeStyle = other.color
         ctx.moveTo(other.x, other.y);
