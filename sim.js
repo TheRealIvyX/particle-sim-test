@@ -173,16 +173,29 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   o.bondStrength = prop.bondProps.strength
   particles.push(o)
 }
-for (let i = 0; i<100; i++) {
-  spawnPart({ // spawn 100 particles on the screen
+for (let i = 0; i<20; i++) {
+  spawnPart({ // spawn 20 white particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
-    energy: 30*Math.random(), // give them a random energy just to see what happens
-    reactivity: 0.1,
+    energy: 1*Math.random(),
+    reactivity: 0.9,
     color: '#ffffff',
     bondProps: {
       max: 1,
       strength: 0.9
+    }
+  })
+}
+for (let i = 0; i<10; i++) {
+  spawnPart({ // spawn 10 red particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 1*Math.random(),
+    reactivity: 0.7,
+    color: '#ff0000',
+    bondProps: {
+      max: 2,
+      strength: 0.7
     }
   })
 }
