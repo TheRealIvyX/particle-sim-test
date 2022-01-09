@@ -61,7 +61,7 @@ class Particle {
   interact() {
     particles.forEach(function(other){
       if (other != this) {
-        if (dist(this, other) < 3000) {
+        if (dist(this, other) < 3000) { // attract particles to each other
           let force = 500
           console.log(force)
           force = force / dist(this, other) / dist(this, other)
