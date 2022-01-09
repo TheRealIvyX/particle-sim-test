@@ -81,3 +81,4 @@ var bringToLife = (() => {
     part.draw()
   })
 })
+setInterval(bringToLife, 1000/60); // run at 60 fps
