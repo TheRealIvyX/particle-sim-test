@@ -123,8 +123,15 @@ class Particle {
           }
           if (dist(me, other) < 300) { // substitution in molecules
             if (other.substitutionPriority < me.substitutionPriotity && (1-(Math.random()*Math.random()*Math.random())<(me.reactivity+other.reactivity)/2) && me.bonds.length < me.maxBonds) {
+              if (me.bonds.length > 0) {
+                let swap = me.bonds[Math.floor(me.bonds.length*Math.random())]
+                me.splitBond(me, swap)
+                if (other.substitionPriority - me.substitionPriority == 1) {
+                  other.bond(other, swap)
+                }
+              }
               let substitutedBonds = []
-              for (let i = 0; i<Math.min(other.bonds.length, me.maxBonds-me.bonds.length);i++) {
+              for (let i = 0; i<Math.min(other.bonds.length, (me.maxBonds+1)-me.bonds.length);i++) {
                 substitutedBonds.push(other.bonds[i])
               }
               for (let i = 0; i<substitutedBonds.length; i++) {
