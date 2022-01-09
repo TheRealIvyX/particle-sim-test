@@ -229,6 +229,8 @@ for (let i = 0; i<5; i++) {
 
 // var is deprecated ik
 var bringToLife = (() => {
+  if (canvas.width != window.innerWidth) canvas.width = window.innerWidth // update canvas size if it is changed
+  if (canvas.height != window.innerHeight) canvas.height = window.innerHeight
   ctx.clearRect(0, 0, canvas.width, canvas.height) // clear the canvas every frame
   particles.forEach(function(part){ // do the movement and interactions of the particles
     part.move()
