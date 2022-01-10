@@ -204,7 +204,7 @@ class Particle {
               })
               if (other.substitutionPriority - me.substitutionPriorit <= 1.5) {
                 swapBonds.forEach(function(part){
-                  other.bond(me, part)
+                  other.bond(other, part)
                 })
               }
             }
