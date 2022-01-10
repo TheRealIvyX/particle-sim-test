@@ -206,7 +206,7 @@ class Particle {
           if (dist(me, other) < 150) { // particle theft in molecules
             if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.bonds.length < me.maxBonds) {
               let bondToSplit = null
-              if (other.bonds.length >= other.maxBonds) bondToSplit = Math.min(Math.floor(Math.random()*other.bonds.length), other.bonds.length-1)
+              if (other.bonds.length >= other.maxBonds) bondToSplit = other.bonds[0]
               if (bondToSplit != null) {
                 other.splitBond(other, bondToSplit)
               }
@@ -285,8 +285,8 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   particles.push(o)
 }
 
-for (let i = 0; i<20; i++) {
-  spawnPart({ // spawn 20 white particles on the screen
+for (let i = 0; i<40; i++) {
+  spawnPart({ // spawn 40 white particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -299,8 +299,8 @@ for (let i = 0; i<20; i++) {
     }
   })
 }
-for (let i = 0; i<10; i++) {
-  spawnPart({ // spawn 10 red particles on the screen
+for (let i = 0; i<20; i++) {
+  spawnPart({ // spawn 20 red particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -312,8 +312,8 @@ for (let i = 0; i<10; i++) {
     }
   })
 }
-for (let i = 0; i<5; i++) {
-  spawnPart({ // spawn 5 blue particles on the screen
+for (let i = 0; i<10; i++) {
+  spawnPart({ // spawn 10 blue particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -325,8 +325,8 @@ for (let i = 0; i<5; i++) {
     }
   })
 }
-for (let i = 0; i<5; i++) {
-  spawnPart({ // spawn 5 dark grey particles on the screen
+for (let i = 0; i<10; i++) {
+  spawnPart({ // spawn 10 dark grey particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -338,8 +338,8 @@ for (let i = 0; i<5; i++) {
     }
   })
 }
-for (let i = 0; i<5; i++) {
-  spawnPart({ // spawn 5 light blue particles on the screen
+for (let i = 0; i<10; i++) {
+  spawnPart({ // spawn 10 light blue particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -351,8 +351,8 @@ for (let i = 0; i<5; i++) {
     }
   })
 }
-for (let i = 0; i<10; i++) {
-  spawnPart({ // spawn 10 green particles on the screen
+for (let i = 0; i<20; i++) {
+  spawnPart({ // spawn 20 green particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
@@ -365,8 +365,8 @@ for (let i = 0; i<10; i++) {
     }
   })
 }
-for (let i = 0; i<2; i++) {
-  spawnPart({ // spawn 2 desatured light blue particles on the screen
+for (let i = 0; i<4; i++) {
+  spawnPart({ // spawn 4 desatured light blue particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
