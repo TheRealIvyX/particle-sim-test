@@ -182,22 +182,32 @@ class Particle {
             }
           }
           if (dist(me, other) < 150) { // substitution in molecules
-            if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/600 && me.maxBonds >= other.maxBonds) {
-              if (me.bonds.length > 0) {
-                let swap = me.bonds[Math.floor(me.bonds.length*Math.random())]
-                me.splitBond(me, swap)
-                if (other.substitionPriority - me.substitionPriority == 1) {
-                  other.bond(other, swap)
-                }
+            if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.maxBonds >= other.maxBonds) {
+              let swapBonds = []
+              me.bonds.forEach(function(part){
+                if (other.substitutionPriority - me.substitutionPriority <= 1.5 && swapBonds.length < other.maxBonds) swapBonds.push(part)
+                me.splitBond(me, part)
+              })
+              let substituteBonds = []
+              other.bonds.forEach(function(part){
+                substituteBonds.push(part)
+                other.splitBond(other, part)
+              })
+              substituteBonds.forEach(function(part){
+                me.bond(me, part)
+              })
+              if (other.substitutionPriority - me.substitutionPriorit <= 1.5) {
+                swapBonds.forEach(function(part){
+                  other.bond(me, part)
+                })
               }
-              let substitutedBonds = []
-              for (let i = 0; i<Math.min(other.bonds.length, (me.maxBonds+1)-me.bonds.length);i++) {
-                substitutedBonds.push(other.bonds[i])
-              }
-              for (let i = 0; i<substitutedBonds.length; i++) {
-                other.splitBond(other, substitutedBonds[i])
-                me.bond(me, substitutedBonds[i])
-              }
+            }
+          }
+          if (dist(me, other) < 150) { // particle theft in molecules
+            if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.bonds.length < me.maxBonds) {
+              let bondToSplit = Math.min(Math.floor(Math.random()*other.bonds.length), other.bonds.length-1)
+              other.splitBond(other, bondToSplit)
+              me.bond(me, other)
             }
           }
         }
