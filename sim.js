@@ -365,7 +365,7 @@ for (let i = 0; i<10; i++) {
   })
 }
 for (let i = 0; i<2; i++) {
-  spawnPart({ // spawn 2 desatured light blue particles on the screen
+  spawnPart({ // spawn 2 desaturated light blue particles on the screen
     x: canvas.width*Math.random(),
     y: canvas.height*Math.random(),
     energy: 30*Math.random(),
