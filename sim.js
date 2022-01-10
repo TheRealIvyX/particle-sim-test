@@ -206,8 +206,10 @@ class Particle {
           if (dist(me, other) < 150) { // particle theft in molecules
             if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.bonds.length < me.maxBonds) {
               let bondToSplit = Math.min(Math.floor(Math.random()*other.bonds.length), other.bonds.length-1)
-              other.splitBond(other, bondToSplit)
-              me.bond(me, other)
+              if (bondToSplit != undefined && bondToSplit != null) {
+                other.splitBond(other, bondToSplit)
+                me.bond(me, other)
+              }
             }
           }
         }
@@ -359,6 +361,20 @@ for (let i = 0; i<10; i++) {
       max: 1,
       strength: 0.99,
       substitutionPriority: 2
+    }
+  })
+}
+for (let i = 0; i<2; i++) {
+  spawnPart({ // spawn 2 desatured light blue particles on the screen
+    x: canvas.width*Math.random(),
+    y: canvas.height*Math.random(),
+    energy: 30*Math.random(),
+    reactivity: 0.075,
+    color: '#819a9a',
+    bondProps: {
+      max: 4,
+      strength: 0.8,
+      substitutionPriority: 1.1
     }
   })
 }
