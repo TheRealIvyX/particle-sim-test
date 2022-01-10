@@ -5,6 +5,11 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 let paused = false
 let heldKeys = {}
+function nullCheck(val, def) {
+  if (val != null) {
+    return val // return the value if value is defined
+  } else return def // return default value otherwise
+}
 window.addEventListener('keyup', (e) => {
   heldKeys[e.keyCode] = false;
   if (e.keyCode == 32) {
@@ -135,7 +140,8 @@ class Particle {
         let force = dist(me, other)
         if (force <= 50) force = -50
         force *= 0.0025
-        force *= me.bondStrength
+        force /= 1.5
+        force *= (me.bondStrength + other.bondStrength) / 2
         me.vel.x -= ((me.x-other.x)/30)*force
         me.vel.y -= ((me.y-other.y)/30)*force
         if (dist(me, other) > 200) {
@@ -205,10 +211,10 @@ class Particle {
           }
           if (dist(me, other) < 150) { // particle theft in molecules
             if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.bonds.length < me.maxBonds) {
-              let bondToSplit = null
-              if (other.bonds.length >= other.maxBonds) bondToSplit = other.bonds[0]
-              if (bondToSplit != null) {
-                other.splitBond(other, bondToSplit)
+              let split = false
+              if (other.bonds.length >= other.maxBonds) split = true
+              if (split == true) {
+                other.splitBond(other, other.bonds[0])
               }
               me.bond(me, other)
             }
@@ -266,21 +272,17 @@ class Particle {
 
 function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondProps:{max:1,strength:0.9}}) {
   let o = new Particle({
-    x: prop.x,
-    y: prop.y
+    x: nullCheck(prop.x, 0),
+    y: nullCheck(prop.y, 0)
   })
-  if (prop.bondProps == undefined) prop.bondProps = {
-    max: 1,
-    strength: 0.9,
-    halfLife: -1,
-    substitutionPriority: 1
-  }
-  o.energy = prop.energy
-  o.reactivity = prop.reactivity
-  o.color = prop.color
-  o.maxBonds = prop.bondProps.max
-  o.bondHalfLife = prop.bondProps.halfLife
-  o.substitutionPriority = prop.bondProps.substitutionPriority
+  if (prop.bondProps == null) prop.bondProps = {}
+  o.energy = nullCheck(prop.energy, 0)
+  o.reactivity = nullCheck(prop.reactivity, 0)
+  o.color = nullCheck(prop.color, '#ffffff')
+  o.maxBonds = nullCheck(prop.bondProps.max, 1)
+  o.bondStrength = nullCheck(prop.bondProps.strength, 1)
+  o.bondHalfLife = nullCheck(prop.bondProps.halfLife, -1)
+  o.substitutionPriority = nullCheck(prop.bondProps.substitutionPriority, 1)
   o.id = Date.now()
   particles.push(o)
 }
@@ -294,7 +296,7 @@ for (let i = 0; i<40; i++) {
     color: '#ffffff',
     bondProps: {
       max: 1,
-      strength: 0.9,
+      strength: 1.35,
       substitutionPriority: 0
     }
   })
@@ -308,7 +310,7 @@ for (let i = 0; i<20; i++) {
     color: '#ff0000',
     bondProps: {
       max: 2,
-      strength: 0.7
+      strength: 1.05
     }
   })
 }
@@ -321,7 +323,7 @@ for (let i = 0; i<10; i++) {
     color: '#0000ff',
     bondProps: {
       max: 3,
-      strength: 0.95
+      strength: 1.7
     }
   })
 }
@@ -334,7 +336,7 @@ for (let i = 0; i<10; i++) {
     color: '#383838',
     bondProps: {
       max: 4,
-      strength: 0.9
+      strength: 1.35
     }
   })
 }
@@ -360,7 +362,7 @@ for (let i = 0; i<20; i++) {
     color: '#90e050',
     bondProps: {
       max: 1,
-      strength: 0.99,
+      strength: 1.95,
       substitutionPriority: 2
     }
   })
@@ -374,7 +376,7 @@ for (let i = 0; i<4; i++) {
     color: '#819a9a',
     bondProps: {
       max: 4,
-      strength: 0.8,
+      strength: 1.2,
       substitutionPriority: 1.1
     }
   })
