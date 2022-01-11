@@ -5,6 +5,7 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 let paused = false
 let heldKeys = {}
+let partID = 0
 function nullCheck(val, def) {
   if (val != null) {
     return val // return the value if value is defined
@@ -106,7 +107,7 @@ class Particle {
     this.color = '#ffffff'
     this.maxBonds = 1 // max amount of bonds the particle can have
     this.bondHalfLife = -1 // the time it takes for half of all bonds formed by this particle to randomly break on their own in seconds. set to -1 to disable
-    this.id = -1 // DO NOT CHANGE
+    this.id = partID++ // DO NOT CHANGE
     this.substitutionPriority = 1 // particles with a lower substitution priority than other particles can be replaced by them in a molecule
   }
   splitBond(part1, part2) {
@@ -283,7 +284,6 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   o.bondStrength = nullCheck(prop.bondProps.strength, 1)
   o.bondHalfLife = nullCheck(prop.bondProps.halfLife, -1)
   o.substitutionPriority = nullCheck(prop.bondProps.substitutionPriority, 1)
-  o.id = Date.now()
   particles.push(o)
 }
 
