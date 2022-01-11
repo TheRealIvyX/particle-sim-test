@@ -160,6 +160,7 @@ class Particle {
     }
   }
   interact() {
+    if (this.bonds.length > this.maxBonds) this.splitBond(this, this.bonds[this.bonds.length-1])
     let me = this
     particles.forEach(function(other){
       if (other != me) {
