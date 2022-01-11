@@ -40,6 +40,24 @@ let camera = {
     y: 0
   }
 }
+/*let sprites = new Image();
+sprites.src = 'assets/sprites.png';
+sprites.addEventListener('load', loadUIsprites, false);*/
+let tool = 'select'
+let selectedMenu = 'default'
+let menus = {
+  default: [
+    'select','menu_addPart','removePart'
+  ],
+  addPart: [
+    'back_default'
+  ]
+}
+let uiLoaded = false
+//function loadUIsprites() {uiloaded = true}
+/*canvas.addEventListener('click', () => {
+  console.log('click')
+});*/
 function gameControl() {
   if (keyDown(37) || keyDown(65)) {
     camera.vel.x += 0.2
@@ -68,6 +86,15 @@ function drawUI() {
     ctx.fillText('Simulation Paused', canvas.width/2, 58)
     ctx.strokeText('Simulation Paused', canvas.width/2, 58)
   }
+  /*if (uiLoaded == true) {
+    ctx.fillStyle = '#282828'
+    ctx.strokeStyle = '#000000'
+    ctx.lineWidth = 7.5/2.5
+    ctx.globalAlpha = 0.65
+    ctx.fillRect(-10, canvas.height-42, (32*menus[selectedMenu].length) + 20, 52);
+    ctx.strokeRect(-10, canvas.height-42, (32*menus[selectedMenu].length) + 20, 52);
+    ctx.globalAlpha = 1
+  }*/
 }
 
 let particles = []
