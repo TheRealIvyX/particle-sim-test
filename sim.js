@@ -150,18 +150,20 @@ class Particle {
     if (!part2.bonds.includes(part1)) part2.bonds.push(part1)
   }
   determineCharge() {
-    let me = this
-    let bondElectronegativity = []
-    let avgEN = 0
-    this.bonds.forEach(function(other){
-      bondElectronegativity.push(other.electronegativity)
-    })
-    for (let i = 0; i<bondElectronegativity.length; i++) {
-      avgEN += bondElectronegativity[i]
-    }
-    avgEN /= bondElectronegativity.length
-    avgEN = avgEN - this.electronegativity
-    this.pseudocharge = 0.3*avgEN
+    if (this.bonds.length > 0) {
+      let me = this
+      let bondElectronegativity = []
+      let avgEN = 0
+      this.bonds.forEach(function(other){
+        bondElectronegativity.push(other.electronegativity)
+      })
+      for (let i = 0; i<bondElectronegativity.length; i++) {
+        avgEN += bondElectronegativity[i]
+      }
+      avgEN /= bondElectronegativity.length
+      avgEN = avgEN - this.electronegativity
+      this.pseudocharge = 0.5*avgEN
+    } else this.pseudocharge = 0
   }
   move() {
     this.x += this.vel.x
@@ -235,23 +237,17 @@ class Particle {
           if (dist(me, other) < 700) { // strong long-range inter-molecular attraction/replusion for charged particles
             if (me.pseudocharge != 0 && other.pseudocharge != 0) {
               if (me.pseudocharge * other.pseudocharge > 0) { // repel if both particles have like charges
-                let force = -8000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
+                let force = -13000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
                 force = force / dist(me, other) / dist(me, other)
-                if (force < -1.75) force = -1.75
-                force *= 0.01
+                force *= 0.065
                 me.vel.x -= ((me.x-other.x)/dist(me, other))*force
                 me.vel.y -= ((me.y-other.y)/dist(me, other))*force
-                me.energy -= force*3 // increase/decrease own energy
-                other.energy += force*1
-              } else { // attract otherwise
-                let force = 8000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
+              } else if (dist(me, other) > 40) { // attract otherwise
+                let force = 13000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
                 force = force / dist(me, other) / dist(me, other)
-                if (force > 1.75) force = 1.75
-                force *= 0.01
+                force *= 0.065
                 me.vel.x -= ((me.x-other.x)/dist(me, other))*force
                 me.vel.y -= ((me.y-other.y)/dist(me, other))*force
-                me.energy -= force*3 // increase/decrease own energy
-                other.energy += force*1
               }
             }
           }
