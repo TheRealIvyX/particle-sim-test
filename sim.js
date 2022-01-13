@@ -351,7 +351,7 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   o.bondStrength = nullCheck(prop.bondProps.strength, 1)
   o.bondHalfLife = nullCheck(prop.bondProps.halfLife, -1)
   o.substitutionPriority = nullCheck(prop.bondProps.substitutionPriority, 1)
-  o.electronegativity = nullCheck(prop.bondProp.electronegativity, 2.2)
+  o.electronegativity = nullCheck(prop.bondProps.electronegativity, 2.2)
   particles.push(o)
   return o
 }
