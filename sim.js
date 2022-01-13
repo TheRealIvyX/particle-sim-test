@@ -136,6 +136,8 @@ class Particle {
     this.bondHalfLife = -1 // the time it takes for half of all bonds formed by this particle to randomly break on their own in seconds. set to -1 to disable
     this.id = partID++ // DO NOT CHANGE
     this.substitutionPriority = 1 // particles with a lower substitution priority than other particles can be replaced by them in a molecule
+    this.electronegativity = 2.2
+    this.pseudocharge = 0 // electromagnetism. determined by electronegativity
   }
   splitBond(part1, part2) {
     part2.bonds.splice(part2.bonds.indexOf(part1))
@@ -146,6 +148,20 @@ class Particle {
   bond(part1, part2) {
     if (!part1.bonds.includes(part2)) part1.bonds.push(part2)
     if (!part2.bonds.includes(part1)) part2.bonds.push(part1)
+  }
+  determineCharge() {
+    let me = this
+    let bondElectronegativity = []
+    let avgEN = 0
+    this.bonds.forEach(function(other){
+      bondElectronegativity.push(other.electronegativity)
+    })
+    for (let i = 0; i<bondElectronegativity.length; i++) {
+      avgEN += bondElectronegativity[i]
+    }
+    avgEN /= bondElectronegativity.length
+    avgEN = avgEN - this.electronegativity
+    this.pseudocharge = 0.3*avgEN
   }
   move() {
     this.x += this.vel.x
@@ -213,6 +229,29 @@ class Particle {
             if (me.reactivity > 0 && other.reactivity > 0 && dist(me, other) < 200) {
               if ((1-(Math.random()*Math.random()*Math.random())) < (me.reactivity+other.reactivity)/2 && me.bonds.length < me.maxBonds && other.bonds.length < other.maxBonds) {
                 me.bond(me, other)
+              }
+            }
+          }
+          if (dist(me, other) < 700) { // strong long-range inter-molecular attraction/replusion for charged particles
+            if (me.pseudocharge != 0 && other.pseudocharge != 0) {
+              if (me.pseudocharge * other.pseudocharge > 0) { // repel if both particles have like charges
+                let force = -8000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
+                force = force / dist(me, other) / dist(me, other)
+                if (force < -1.75) force = -1.75
+                force *= 0.01
+                me.vel.x -= ((me.x-other.x)/dist(me, other))*force
+                me.vel.y -= ((me.y-other.y)/dist(me, other))*force
+                me.energy -= force*3 // increase/decrease own energy
+                other.energy += force*1
+              } else { // attract otherwise
+                let force = 8000 * Math.max(other.pseudocharge, other.pseudocharge*-1)
+                force = force / dist(me, other) / dist(me, other)
+                if (force > 1.75) force = 1.75
+                force *= 0.01
+                me.vel.x -= ((me.x-other.x)/dist(me, other))*force
+                me.vel.y -= ((me.y-other.y)/dist(me, other))*force
+                me.energy -= force*3 // increase/decrease own energy
+                other.energy += force*1
               }
             }
           }
@@ -312,7 +351,9 @@ function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondPro
   o.bondStrength = nullCheck(prop.bondProps.strength, 1)
   o.bondHalfLife = nullCheck(prop.bondProps.halfLife, -1)
   o.substitutionPriority = nullCheck(prop.bondProps.substitutionPriority, 1)
+  o.electronegativity = nullCheck(prop.bondProp.electronegativity, 2.2)
   particles.push(o)
+  return o
 }
 
 for (let i = 0; i<40; i++) {
@@ -338,7 +379,8 @@ for (let i = 0; i<20; i++) {
     color: '#ff0000',
     bondProps: {
       max: 2,
-      strength: 1.05
+      strength: 1.05,
+      electronegativity: 3.44
     }
   })
 }
@@ -351,7 +393,8 @@ for (let i = 0; i<10; i++) {
     color: '#0000ff',
     bondProps: {
       max: 3,
-      strength: 1.7
+      strength: 1.7,
+      electronegativity: 3.04
     }
   })
 }
@@ -364,7 +407,8 @@ for (let i = 0; i<10; i++) {
     color: '#383838',
     bondProps: {
       max: 4,
-      strength: 1.35
+      strength: 1.35,
+      electronegativity: 2.55
     }
   })
 }
@@ -391,7 +435,8 @@ for (let i = 0; i<20; i++) {
     bondProps: {
       max: 1,
       strength: 1.95,
-      substitutionPriority: 2
+      substitutionPriority: 2,
+      electronegativity: 4
     }
   })
 }
@@ -405,7 +450,8 @@ for (let i = 0; i<4; i++) {
     bondProps: {
       max: 4,
       strength: 1.2,
-      substitutionPriority: 1.1
+      substitutionPriority: 1.1,
+      electronegativity: 1.9
     }
   })
 }
@@ -416,6 +462,9 @@ var bringToLife = (() => {
   if (canvas.height != window.innerHeight) canvas.height = window.innerHeight
   ctx.clearRect(0, 0, canvas.width, canvas.height) // clear the canvas every frame
   if (paused != true) { // dont do any movement or interactions if the simulation is paused
+    particles.forEach(function(part){ // these functions are done first
+      part.determineCharge()
+    })
     particles.forEach(function(part){ // do the movement and interactions of the particles
       part.move()
       part.interact()
