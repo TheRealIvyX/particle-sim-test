@@ -54,7 +54,7 @@ let menus = {
   ]
 }
 let uiLoaded = false
-function loadUIsprites() {uiloaded = true}
+function loadUIsprites() {uiLoaded = true}
 canvas.addEventListener('click', () => {
   console.log('click')
 });
