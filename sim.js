@@ -253,23 +253,34 @@ class Particle {
           }
           if (dist(me, other) < 150) { // substitution in molecules
             if (other.substitutionPriority < me.substitutionPriority && (1-(Math.random()*Math.random()*Math.random()))<(me.reactivity+other.reactivity)/2 && Math.random() <= 1/200 && me.maxBonds >= other.maxBonds) {
-              let swapBonds = []
-              me.bonds.forEach(function(part){
-                if (other.substitutionPriority - me.substitutionPriority <= 1.5 && swapBonds.length < other.maxBonds) swapBonds.push(part)
-                me.splitBond(me, part)
-              })
-              let substituteBonds = []
+              let avgSPs = []
               other.bonds.forEach(function(part){
-                substituteBonds.push(part)
-                other.splitBond(other, part)
+                avgSPs.push(part.substitutionPriority)
               })
-              substituteBonds.forEach(function(part){
-                me.bond(me, part)
-              })
-              if (other.substitutionPriority - me.substitutionPriorit <= 1.5) {
-                swapBonds.forEach(function(part){
-                  other.bond(other, part)
+              let avgSP = 0
+              for (let i = 0; i<avgSPs.length; i++) {
+                avgSP += avgSPs[i]
+              }
+              avgSP /= avgSPs.length
+              if (me.substitutionPriority > avgSP) {
+                let swapBonds = []
+                me.bonds.forEach(function(part){
+                  if (other.substitutionPriority - me.substitutionPriority <= 1.5 && swapBonds.length < other.maxBonds) swapBonds.push(part)
+                  me.splitBond(me, part)
                 })
+                let substituteBonds = []
+                other.bonds.forEach(function(part){
+                  substituteBonds.push(part)
+                  other.splitBond(other, part)
+                })
+                substituteBonds.forEach(function(part){
+                  me.bond(me, part)
+                })
+                if (other.substitutionPriority - me.substitutionPriorit <= 1.5) {
+                  swapBonds.forEach(function(part){
+                    other.bond(other, part)
+                  })
+                }
               }
             }
           }
