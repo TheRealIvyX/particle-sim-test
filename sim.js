@@ -40,9 +40,9 @@ let camera = {
     y: 0
   }
 }
-/*let sprites = new Image();
+let sprites = new Image();
 sprites.src = 'assets/sprites.png';
-sprites.addEventListener('load', loadUIsprites, false);*/
+sprites.addEventListener('load', loadUIsprites, false);
 let tool = 'select'
 let selectedMenu = 'default'
 let menus = {
@@ -54,10 +54,10 @@ let menus = {
   ]
 }
 let uiLoaded = false
-//function loadUIsprites() {uiloaded = true}
-/*canvas.addEventListener('click', () => {
+function loadUIsprites() {uiloaded = true}
+canvas.addEventListener('click', () => {
   console.log('click')
-});*/
+});
 function gameControl() {
   if (keyDown(37) || keyDown(65)) {
     camera.vel.x += 0.2
@@ -86,7 +86,7 @@ function drawUI() {
     ctx.fillText('Simulation Paused', canvas.width/2, 58)
     ctx.strokeText('Simulation Paused', canvas.width/2, 58)
   }
-  /*if (uiLoaded == true) {
+  if (uiLoaded == true) {
     ctx.fillStyle = '#282828'
     ctx.strokeStyle = '#000000'
     ctx.lineWidth = 7.5/2.5
@@ -94,7 +94,11 @@ function drawUI() {
     ctx.fillRect(-10, canvas.height-42, (32*menus[selectedMenu].length) + 20, 52);
     ctx.strokeRect(-10, canvas.height-42, (32*menus[selectedMenu].length) + 20, 52);
     ctx.globalAlpha = 1
-  }*/
+    for (let i = 0; i<menus[selectedMenu].length; i++) {
+      let pos = [0,0]
+      ctx.drawImage(sprites, 32*pos[0], 32*pos[1], 32, 32, 5+(i*32), canvas.height-5, 32*4, 32*3)
+    }
+  }
 }
 
 let particles = []
