@@ -47,7 +47,7 @@ let tool = 'select'
 let selectedMenu = 'default'
 let menus = {
   default: [
-    'select','menu_addPart','removePart'
+    'select','menu_addPart','removePart','addBond','breakBond','addEnergy','clearParts'
   ],
   addPart: [
     'back_default'
@@ -96,7 +96,36 @@ function drawUI() {
     ctx.globalAlpha = 1
     for (let i = 0; i<menus[selectedMenu].length; i++) {
       let pos = [0,0]
-      ctx.drawImage(sprites, 32*pos[0], 32*pos[1], 32, 32, 5+(i*32), canvas.height-5, 32*4, 32*3)
+      let chars = ''
+      for (let d = 0; d<Math.min(4, menus[selectedMenu][i].length); d++) {
+        chars += menus[selectedMenu][i][d]
+      }
+      if (chars != 'back') {
+        switch (menus[selectedMenu][i]) {
+          case 'select':
+            pos = [1,0]
+            break;
+          case 'menu_addPart':
+            pos = [2,0]
+            break;
+          case 'removePart':
+            pos = [0,1]
+            break;
+          case 'addBond':
+            pos = [3,1]
+            break;
+          case 'breakBond':
+            pos = [0,2]
+            break;
+          case 'addEnergy':
+            pos = [3,0]
+            break;
+          case 'clearParts':
+            pos = [1,2]
+            break;
+        }
+      } else pos = [0,0]
+      ctx.drawImage(sprites, 32*pos[0], 32*pos[1], 32, 32, 5+(i*32), canvas.height-37, 32, 32)
     }
   }
 }
