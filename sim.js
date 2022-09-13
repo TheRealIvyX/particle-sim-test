@@ -201,11 +201,11 @@ class Particle {
   move() {
     this.x += this.vel.x
     this.y += this.vel.y
-    this.vel.x *= 0.999
-    this.vel.y *= 0.999
+    this.vel.x *= 0.998
+    this.vel.y *= 0.998
     if (this.energy > 0) {
-      this.x += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1) // vibrate less if bonded
-      this.y += ((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1)
+      this.vel.x += (((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1))/12 // vibrate less if bonded
+      this.vel.y += (((this.energy * Math.random()) - (this.energy / 2))/(this.bonds.length+1))/12
       this.energy *= 0.99
     }
     if (this.reactivity > 0) { // do not get pulled towards bonds if completely unreactive
@@ -328,10 +328,10 @@ class Particle {
             }
           }
         }
-        if (dist(me, other) < 30) { // extreme very short range repulsion to avoid particles intersecting
+        if (dist(me, other) < 20) { // extreme very short range repulsion to avoid particles intersecting
           let force = 15000
           force = force / dist(me, other) / dist(me, other)
-          if (force >= 10) force = 10
+          if (force >= 25) force = 25
           force *= 0.01
           me.vel.x += ((me.x-other.x)/dist(me, other))*force
           me.vel.y += ((me.y-other.y)/dist(me, other))*force
