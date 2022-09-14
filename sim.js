@@ -60,21 +60,21 @@ canvas.addEventListener('click', () => {
 });
 function gameControl() {
   if (keyDown(37) || keyDown(65)) {
-    camera.vel.x += 0.2
+    camera.vel.x += 3
   }
   if (keyDown(38) || keyDown(87)) {
-    camera.vel.y += 0.2
+    camera.vel.y += 3
   }
   if (keyDown(39) || keyDown(68)) {
-    camera.vel.x -= 0.2
+    camera.vel.x -= 3
   }
   if (keyDown(40) || keyDown(83)) {
-    camera.vel.y -= 0.2
+    camera.vel.y -= 3
   }
   camera.x += camera.vel.x
   camera.y += camera.vel.y
-  camera.vel.x *= 0.99
-  camera.vel.y *= 0.99
+  camera.vel.x *= 0.7
+  camera.vel.y *= 0.7
 }
 function drawUI() {
   if (paused == true) {
