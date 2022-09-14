@@ -64,7 +64,7 @@ canvas.addEventListener('click', (event) => {
   if (event.clientX > (32*menus[selectedMenu].length) + 20 && event.clientY < canvas.height-42) {
     switch (tool) {
       case 'select':
-        if (1===) {
+        if (1===1) {
           let highestID = -1
           for (let part of particles) {
             if (dist(part, {x: event.clientX, y: event.clientY}) <= 30) {
