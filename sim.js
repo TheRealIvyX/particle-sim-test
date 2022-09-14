@@ -6,10 +6,14 @@ canvas.height = window.innerHeight
 let paused = false
 let heldKeys = {}
 let partID = 0
+let particles = []
 function nullCheck(val, def) {
   if (val != null) {
     return val // return the value if value is defined
   } else return def // return default value otherwise
+}
+function dist(o1,o2) {
+  return Math.sqrt(Math.pow(o1.x-o2.x,2) + Math.pow(o1.y-o2.y,2))
 }
 window.addEventListener('keyup', (e) => {
   heldKeys[e.keyCode] = false;
@@ -44,7 +48,7 @@ let sprites = new Image();
 sprites.src = 'assets/sprites.png';
 sprites.addEventListener('load', loadUIsprites, false);
 let tool = 'select'
-let selectedPartID = null
+let selectedPartID = -1
 let selectedMenu = 'default'
 let menus = {
   default: [
@@ -57,8 +61,23 @@ let menus = {
 let uiLoaded = false
 function loadUIsprites() {uiLoaded = true}
 canvas.addEventListener('click', (event) => {
-  console.log(event.clientX)
-  // if ((32*menus[selectedMenu].length) + 20
+  if (event.clientX > (32*menus[selectedMenu].length) + 20 && event.clientY < canvas.height-42) {
+    switch (tool) {
+      case 'select':
+        if (1===) {
+          let highestID = -1
+          for (let part of particles) {
+            if (dist(part, {x: event.clientX, y: event.clientY}) <= 30) {
+              if (part.id > highestID) highestID = part.id
+            }
+          }
+          if (highestID != -1) {
+            selectedPartID = highestID
+          } else selectedPartID = -1
+        }
+        break
+    }
+  }
 });
 function gameControl() {
   if (keyDown(37) || keyDown(65)) {
@@ -130,11 +149,6 @@ function drawUI() {
       ctx.drawImage(sprites, 32*pos[0], 32*pos[1], 32, 32, 5+(i*32), canvas.height-37, 32, 32)
     }
   }
-}
-
-let particles = []
-function dist(o1,o2) {
-  return Math.sqrt(Math.pow(o1.x-o2.x,2) + Math.pow(o1.y-o2.y,2))
 }
 
 class Vector {
@@ -378,6 +392,18 @@ class Particle {
     ctx.fill();
     ctx.closePath();
   }
+  drawUI() {
+    // check if the particle is selected via select tool
+    if (this.id == selectedPartID) {
+      // if the particle is the one that is selected, draw a light-gold circle around it
+      ctx.beginPath();
+      ctx.arc(this.x+camera.x, this.y+camera.y, 15 + (Math.sin(Date.now()/750)*2.5), 0, Math.PI*2, false)
+      ctx.strokeStyle = '#ffd966'
+      ctx.lineWidth = 7.5/2.5
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
 }
 
 function spawnPart(prop = {x:0,y:0,energy:0,reactivity:0,color:'#ffffff',bondProps:{max:1,strength:0.9}}) {
@@ -514,6 +540,9 @@ var bringToLife = (() => {
   }
   particles.forEach(function(part){ // draw them after doing everything
     part.draw()
+  })
+  particles.forEach(function(part){ // stuff related to the UI ie particle selection
+    part.drawUI()
   })
   gameControl() // stuff like camera movement
   drawUI() // draw the UI after everything else is drawn
