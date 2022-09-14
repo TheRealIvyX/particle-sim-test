@@ -67,7 +67,7 @@ canvas.addEventListener('click', (event) => {
         if (1===1) {
           let highestID = -1
           for (let part of particles) {
-            if (dist(part, {x: event.clientX, y: event.clientY}) <= 30) {
+            if (dist(part, {x: event.clientX+camera.x, y: event.clientY+camera.y}) <= 30) {
               if (part.id > highestID) highestID = part.id
             }
           }
