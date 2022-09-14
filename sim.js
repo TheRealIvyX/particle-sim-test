@@ -65,14 +65,14 @@ canvas.addEventListener('click', (event) => {
     switch (tool) {
       case 'select':
         if (1===1) {
-          let highestID = -1
+          let potentialSelect = [69, -1]
           for (let part of particles) {
-            if (dist(part, {x: event.clientX+camera.x, y: event.clientY+camera.y}) <= 30) {
-              if (part.id > highestID) highestID = part.id
+            if (dist(part, {x: event.clientX-camera.x, y: event.clientY-camera.y}) <= 30) {
+              if (dist(part, {x: event.clientX-camera.x, y: event.clientY-camera.y}) < potentialSelect[0]) potentialSelect = [dist(part, {x: event.clientX-camera.x, y: event.clientY-camera.y}),part.id]
             }
           }
-          if (highestID != -1) {
-            selectedPartID = highestID
+          if (potentialSelect[1] != -1) {
+            selectedPartID = potentialSelect[1]
           } else selectedPartID = -1
         }
         break
