@@ -61,7 +61,7 @@ let menus = {
 let uiLoaded = false
 function loadUIsprites() {uiLoaded = true}
 canvas.addEventListener('click', (event) => {
-  if (event.clientX > (32*menus[selectedMenu].length) + 20 && event.clientY < canvas.height-42) {
+  if (event.clientX > (32*menus[selectedMenu].length) + 20 || event.clientY < canvas.height-42) {
     switch (tool) {
       case 'select':
         if (1===1) {
