@@ -44,6 +44,7 @@ let sprites = new Image();
 sprites.src = 'assets/sprites.png';
 sprites.addEventListener('load', loadUIsprites, false);
 let tool = 'select'
+let selectedPartID = null
 let selectedMenu = 'default'
 let menus = {
   default: [
@@ -55,8 +56,9 @@ let menus = {
 }
 let uiLoaded = false
 function loadUIsprites() {uiLoaded = true}
-canvas.addEventListener('click', () => {
-  console.log('click')
+canvas.addEventListener('click', (event) => {
+  console.log(event.clientX)
+  // if ((32*menus[selectedMenu].length) + 20
 });
 function gameControl() {
   if (keyDown(37) || keyDown(65)) {
